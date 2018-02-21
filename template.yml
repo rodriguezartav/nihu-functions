@@ -16,7 +16,7 @@ Resources:
       Tracing: Active
       AutoPublishAlias: live
       Timeout: 10
-      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Role: arn:aws:iam::447557482412:role/lambda-srv-role
       CodeUri: './neutron81/ion-integration-slack/'
       Tags:
         ServiceTag: srv
@@ -32,7 +32,7 @@ Resources:
       Handler: index.handler
       Runtime: nodejs6.10
       Tracing: Active
-      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Role: arn:aws:iam::447557482412:role/lambda-srv-role
       Timeout: 10
       AutoPublishAlias: live
       CodeUri: './neutron81/ion-login-auth/'
@@ -55,7 +55,7 @@ Resources:
       Handler: index.handler
       Runtime: nodejs6.10
       Tracing: Active
-      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Role: arn:aws:iam::447557482412:role/lambda-srv-role
       Timeout: 30
       AutoPublishAlias: live
       CodeUri: './neutron81/ion-login-api/'
@@ -67,7 +67,7 @@ Resources:
           RESPONSE_TYPE: "api"
           LOG_TAG: "AUTH"
           SKIP_LOAD_ENV: "true"
-          SES_REGION: "us-west-2"
+          SES_REGION: "us-east-1"
           SES_SOURCE: "it@rodcocr.com"
 
   codebuild:
@@ -78,7 +78,7 @@ Resources:
       Runtime: nodejs6.10
       Tracing: Active
       AutoPublishAlias: live
-      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Role: arn:aws:iam::447557482412:role/lambda-srv-role
       Timeout: 10
       CodeUri: './neutron81/ion-admin-codebuild/'
       Tags:
@@ -97,7 +97,7 @@ Resources:
       Runtime: nodejs6.10
       Tracing: Active
       AutoPublishAlias: live
-      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Role: arn:aws:iam::447557482412:role/lambda-srv-role
       Timeout: 10
       CodeUri: './neutron81/ion-admin-logs/'
       Tags:
@@ -117,7 +117,7 @@ Resources:
       Runtime: nodejs6.10
       Tracing: Active
       AutoPublishAlias: live
-      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Role: arn:aws:iam::447557482412:role/lambda-srv-role
       Timeout: 10
       CodeUri: './neutron81/ion-admin-ping/'
       Tags:
@@ -136,7 +136,7 @@ Resources:
       Runtime: nodejs6.10
       Tracing: Active
       AutoPublishAlias: live
-      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Role: arn:aws:iam::447557482412:role/lambda-srv-role
       Timeout: 30
       CodeUri: './neutron81/ion-email-marketing/'
       Tags:
@@ -159,7 +159,7 @@ Resources:
       Handler: index.handler
       Runtime: nodejs6.10
       Tracing: Active
-      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Role: arn:aws:iam::447557482412:role/lambda-srv-role
       Timeout: 10
       AutoPublishAlias: live
       CodeUri: './neutron81/ion-admin-sqs/'
