@@ -86,7 +86,7 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: !Sub "${FunctionNameSuffix}"
-          SLACK_API_TOKEN: "xoxp-3840399956-3845072824-209853417362-539ee751dc472bf530a79738e2fa16a0"
+          SLACK_API_TOKEN: ""
           RESPONSE_TYPE: "app"
 
   logs:
