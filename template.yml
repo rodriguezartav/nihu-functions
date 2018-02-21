@@ -1,0 +1,170 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  FunctionNameSuffix:
+    Type: String
+
+Resources:
+
+  RodcoServerlessSlack:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "srv-rodcoserverless-slack-${FunctionNameSuffix}"
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Tracing: Active
+      AutoPublishAlias: live
+      Timeout: 10
+      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      CodeUri: './neutron81/ion-integration-slack/'
+      Tags:
+        ServiceTag: srv
+      Environment:
+        Variables:
+          NODE_ENV: !Sub "${FunctionNameSuffix}"
+          RESPONSE_TYPE: "app"
+
+  auth:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "srv-serverless-auth-${FunctionNameSuffix}"
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Tracing: Active
+      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Timeout: 10
+      AutoPublishAlias: live
+      CodeUri: './neutron81/ion-login-auth/'
+      Tags:
+        ServiceTag: srv
+      Environment:
+        Variables:
+          NODE_ENV: !Sub "${FunctionNameSuffix}"
+          RESPONSE_TYPE: "app"
+          LOG_TAG: "AUTH"
+          SKIP_LOAD_ENV: "true"
+          DB_HOST: "rodcodb.ch5hu9oa9lig.us-east-1.rds.amazonaws.com"
+          DB_USER: "rodco"
+
+
+  login:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "srv-serverless-login-${FunctionNameSuffix}"
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Tracing: Active
+      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Timeout: 30
+      AutoPublishAlias: live
+      CodeUri: './neutron81/ion-login-api/'
+      Tags:
+        ServiceTag: srv
+      Environment:
+        Variables:
+          NODE_ENV: !Sub "${FunctionNameSuffix}"
+          RESPONSE_TYPE: "api"
+          LOG_TAG: "AUTH"
+          SKIP_LOAD_ENV: "true"
+          SES_REGION: "us-west-2"
+          SES_SOURCE: "it@rodcocr.com"
+
+  codebuild:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "srv-serverless-codebuild-${FunctionNameSuffix}"
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Tracing: Active
+      AutoPublishAlias: live
+      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Timeout: 10
+      CodeUri: './neutron81/ion-admin-codebuild/'
+      Tags:
+        ServiceTag: srv
+      Environment:
+        Variables:
+          NODE_ENV: !Sub "${FunctionNameSuffix}"
+          SLACK_API_TOKEN: "xoxp-3840399956-3845072824-209853417362-539ee751dc472bf530a79738e2fa16a0"
+          RESPONSE_TYPE: "app"
+
+  logs:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "srv-serverless-logs-${FunctionNameSuffix}"
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Tracing: Active
+      AutoPublishAlias: live
+      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Timeout: 10
+      CodeUri: './neutron81/ion-admin-logs/'
+      Tags:
+        ServiceTag: srv
+      Environment:
+        Variables:
+          NODE_ENV: !Sub "${FunctionNameSuffix}"
+          S3_BUCKET: !Sub "ion-logs-${FunctionNameSuffix}"
+          RESPONSE_TYPE: "app"
+
+
+  ping:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "srv-serverless-ping-${FunctionNameSuffix}"
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Tracing: Active
+      AutoPublishAlias: live
+      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Timeout: 10
+      CodeUri: './neutron81/ion-admin-ping/'
+      Tags:
+        ServiceTag: srv
+      Environment:
+        Variables:
+          NODE_ENV: !Sub "${FunctionNameSuffix}"
+          FUNCTIONS: "srv-serverless-auth,srv-cxp,srv-serverless-login"
+          RESPONSE_TYPE: "app"
+
+  marketing:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "srv-serverless-marketing-${FunctionNameSuffix}"
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Tracing: Active
+      AutoPublishAlias: live
+      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Timeout: 30
+      CodeUri: './neutron81/ion-email-marketing/'
+      Tags:
+        ServiceTag: srv
+      Environment:
+        Variables:
+          NODE_ENV: !Sub "${FunctionNameSuffix}"
+          RESPONSE_TYPE: "api"
+          SKIP_LOAD_ENV: "true"
+          SES_REGION: "us-east-1"
+          SES_SOURCE: "roberto@rodcocr.com"
+          EMAILS_RECEIVER: rroberto@rodcocr.com
+          EMAILS_CC: cc@rodcocr.com
+          EMAILS_SOURCE: "roberto+development@rodcocr.com"
+
+  sqsConsumer:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "serverless-sqsConsumer-${FunctionNameSuffix}"
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Tracing: Active
+      Role: arn:aws:iam::904575228420:role/lambda-srv-role
+      Timeout: 10
+      AutoPublishAlias: live
+      CodeUri: './neutron81/ion-admin-sqs/'
+      Environment:
+        Variables:
+          NODE_ENV: !Sub "${FunctionNameSuffix}"
+          SQS_API_URL: !Sub " https://sqs.us-west-1.amazonaws.com/${AWS::AccountId}/apicall${FunctionNameSuffix}.fifo"
+          LAMBDA_FUNCTION_NAME: !Sub "serverless-emailworker-${FunctionNameSuffix}"
