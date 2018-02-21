@@ -12,6 +12,7 @@ phases:
       - apt-get -y install openssh-client
       - eval `ssh-agent -s`
 
+
   build:
     commands:
       - chmod -R 600 ~/.ssh
@@ -22,7 +23,7 @@ phases:
       - chmod +x ./neutron81/install.sh
       - chmod +x ./neutron81/reset.sh
       - ./neutron81/install.sh
-      - aws cloudformation package --template-file ./template.yml --s3-bucket api-cloudformation-packages-west-1  --output-template-file packaged-template.yaml
+      - aws cloudformation package --template-file ./template.yml --s3-bucket nihu-api-cloudformation-packages-west-1  --output-template-file packaged-template.yaml
       - aws cloudformation deploy --template-file ./packaged-template.yaml --stack-name serverless-$NODE_ENV --parameter-overrides FunctionNameSuffix=$NODE_ENV --capabilities CAPABILITY_IAM --region us-east-1
 
   post_build:
